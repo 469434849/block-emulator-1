@@ -11,15 +11,16 @@ import (
 	"blockEmulator/params"
 	"blockEmulator/shard"
 	"bufio"
+	"github.com/ethereum/go-ethereum/core/rawdb"
+	"github.com/ethereum/go-ethereum/ethdb"
 	"io"
 	"log"
+	"math"
 	"net"
 	"strconv"
 	"sync"
 	"sync/atomic"
-
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/ethdb"
+	"time"
 )
 
 type PbftConsensusNode struct {
@@ -85,7 +86,7 @@ func NewPbftNode(shardID, nodeID uint64, pcc *params.ChainConfig, messageHandleT
 	p.ShardID = shardID
 	p.NodeID = nodeID
 	p.pbftChainConfig = pcc
-	fp := "./record/ldb/s" + strconv.FormatUint(shardID, 10) + "/n" + strconv.FormatUint(nodeID, 10)
+	fp := "./" + params.RecordFileName + "/ldb/s" + strconv.FormatUint(shardID, 10) + "/n" + strconv.FormatUint(nodeID, 10)
 	var err error
 	p.db, err = rawdb.NewLevelDBDatabase(fp, 0, 1, "accountState", false)
 	if err != nil {
@@ -165,6 +166,14 @@ func NewPbftNode(shardID, nodeID uint64, pcc *params.ChainConfig, messageHandleT
 
 // handle the raw message, send it to corresponded interfaces
 func (p *PbftConsensusNode) handleMessage(msg []byte) {
+	//time.Sleep(time.Second)
+	//处理消息根据节点所在分片的权重  进行延时处理
+	if params.UseShardWeight {
+		f := 1 / float64(params.ShardWeight[p.ShardID])
+		formatted := math.Round(f*100) / 100
+		p.pl.Plog.Printf("S%dN%d : UseShardWeight,sleep：%d 毫秒\n", p.ShardID, p.NodeID, int64(formatted*1000))
+		time.Sleep(time.Duration(int64(formatted*1000)) * time.Millisecond)
+	}
 	msgType, content := message.SplitMessage(msg)
 	switch msgType {
 	// pbft inside message type

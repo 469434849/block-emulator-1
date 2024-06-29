@@ -25,9 +25,9 @@ type Storage struct {
 
 // new a storage, build a bolt datase
 func NewStorage(cc *params.ChainConfig) *Storage {
-	_, errStat := os.Stat("./record")
+	_, errStat := os.Stat("./" + params.RecordFileName)
 	if os.IsNotExist(errStat) {
-		errMkdir := os.Mkdir("./record", os.ModePerm)
+		errMkdir := os.Mkdir("./"+params.RecordFileName, os.ModePerm)
 		if errMkdir != nil {
 			log.Panic(errMkdir)
 		}
@@ -36,7 +36,7 @@ func NewStorage(cc *params.ChainConfig) *Storage {
 	}
 
 	s := &Storage{
-		dbFilePath:            "./record/" + strconv.FormatUint(cc.ShardID, 10) + "_" + strconv.FormatUint(cc.NodeID, 10) + "_database",
+		dbFilePath:            "./" + params.RecordFileName + "/" + strconv.FormatUint(cc.ShardID, 10) + "_" + strconv.FormatUint(cc.NodeID, 10) + "_database",
 		blockBucket:           "block",
 		blockHeaderBucket:     "blockHeader",
 		newestBlockHashBucket: "newestBlockHash",

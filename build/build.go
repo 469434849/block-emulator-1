@@ -29,8 +29,8 @@ func initConfig(nid, nnm, sid, snm uint64) *params.ChainConfig {
 		ShardID:        sid,
 		Nodes_perShard: uint64(params.NodesInShard),
 		ShardNums:      snm,
-		BlockSize:      uint64(params.MaxBlockSize_global),
-		BlockInterval:  uint64(params.Block_Interval),
+		BlockSize:      uint64(params.MaxBlockSizeGlobal),
+		BlockInterval:  uint64(params.BlockInterval),
 		InjectSpeed:    uint64(params.InjectSpeed),
 	}
 	return pcc

@@ -2,6 +2,7 @@ package query
 
 import (
 	"blockEmulator/core"
+	"blockEmulator/params"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/rawdb"
 	"github.com/ethereum/go-ethereum/trie"
@@ -10,7 +11,7 @@ import (
 )
 
 func QueryAccountState(ShardID, NodeID uint64, address string) *core.AccountState {
-	fp := "./record/ldb/s" + strconv.FormatUint(ShardID, 10) + "/n" + strconv.FormatUint(NodeID, 10)
+	fp := "./" + params.RecordFileName + "/ldb/s" + strconv.FormatUint(ShardID, 10) + "/n" + strconv.FormatUint(NodeID, 10)
 	db, _ := rawdb.NewLevelDBDatabase(fp, 0, 1, "accountState", false)
 	triedb := trie.NewDatabaseWithConfig(db, &trie.Config{
 		Cache:     0,

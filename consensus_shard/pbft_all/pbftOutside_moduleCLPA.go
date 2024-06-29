@@ -67,7 +67,7 @@ func (crom *CLPARelayOutsideModule) handlePartitionMsg(content []byte) {
 		log.Panic()
 	}
 	crom.cdm.ModifiedMap = append(crom.cdm.ModifiedMap, pm.PartitionModified)
-	crom.pbftNode.pl.Plog.Printf("S%dN%d : has received partition message\n", crom.pbftNode.ShardID, crom.pbftNode.NodeID)
+	crom.pbftNode.pl.Plog.Printf("S%dN%d : has received partition message,len:%d\n", crom.pbftNode.ShardID, crom.pbftNode.NodeID, len(pm.PartitionModified))
 	crom.cdm.PartitionOn = true
 }
 

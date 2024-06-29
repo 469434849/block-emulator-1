@@ -5,10 +5,12 @@ go 1.19
 require (
 	github.com/boltdb/bolt v1.3.1
 	github.com/ethereum/go-ethereum v1.11.6
+	github.com/go-sql-driver/mysql v1.8.1
 	github.com/spf13/pflag v1.0.5
 )
 
 require (
+	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/DataDog/zstd v1.5.2 // indirect
 	github.com/StackExchange/wmi v0.0.0-20180116203802-5d049714c4a6 // indirect
 	github.com/VictoriaMetrics/fastcache v1.6.0 // indirect

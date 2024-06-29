@@ -26,7 +26,7 @@ func NewPbftLog(sid, nid uint64) *PbftLog {
 	if err != nil {
 		log.Panic(err)
 	}
-	pl := log.New(io.MultiWriter(writer1, writer2), pfx, log.Lshortfile|log.Ldate|log.Ltime)
+	pl := log.New(io.MultiWriter(writer1, writer2), pfx, log.Lshortfile|log.Ldate|log.Ltime|log.Lmicroseconds)
 	fmt.Println()
 
 	return &PbftLog{

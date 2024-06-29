@@ -20,8 +20,8 @@ func getABpath() string {
 	return abPath
 }
 
-func GenerateBatFile(nodenum, shardnum, modID int) {
-	fileName := fmt.Sprintf("bat_shardNum=%v_NodeNum=%v_mod=%v.bat", shardnum, nodenum, params.CommitteeMethod[modID])
+func GenerateBatFile(nodenum, shardnum, modID int, isUseShardWeight bool) {
+	fileName := fmt.Sprintf("bat_shardNum=%v_NodeNum=%v_mod=%v_useWeight=%v.bat", shardnum, nodenum, params.CommitteeMethod[modID], isUseShardWeight)
 	ofile, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0777)
 	if err != nil {
 		log.Panic(err)
@@ -29,15 +29,26 @@ func GenerateBatFile(nodenum, shardnum, modID int) {
 	defer ofile.Close()
 	for i := 1; i < nodenum; i++ {
 		for j := 0; j < shardnum; j++ {
-			str := fmt.Sprintf("start cmd /k go run main.go -n %d -N %d -s %d -S %d -m %d \n\n", i, nodenum, j, shardnum, modID)
+			str := fmt.Sprintf("start cmd /k go run main.go -n %d -N %d -s %d -S %d -m %d ", i, nodenum, j, shardnum, modID)
+			if isUseShardWeight {
+				str = str + "-w "
+			}
+			str = str + "\n\n"
 			ofile.WriteString(str)
 		}
 	}
-	str := fmt.Sprintf("start cmd /k go run main.go -c -N %d -S %d -m %d \n\n", nodenum, shardnum, modID)
-
+	str := fmt.Sprintf("start cmd /k go run main.go -c -N %d -S %d -m %d ", nodenum, shardnum, modID)
+	if isUseShardWeight {
+		str = str + "-w "
+	}
+	str = str + "\n\n"
 	ofile.WriteString(str)
 	for j := 0; j < shardnum; j++ {
-		str := fmt.Sprintf("start cmd /k go run main.go -n 0 -N %d -s %d -S %d -m %d \n\n", nodenum, j, shardnum, modID)
+		str := fmt.Sprintf("start cmd /k go run main.go -n 0 -N %d -s %d -S %d -m %d ", nodenum, j, shardnum, modID)
+		if isUseShardWeight {
+			str = str + "-w "
+		}
+		str = str + "\n\n"
 		ofile.WriteString(str)
 	}
 }

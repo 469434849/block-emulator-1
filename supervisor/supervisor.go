@@ -11,6 +11,7 @@ import (
 	"blockEmulator/supervisor/measure"
 	"blockEmulator/supervisor/signal"
 	"blockEmulator/supervisor/supervisor_log"
+	"blockEmulator/utils"
 	"bufio"
 	"encoding/csv"
 	"encoding/json"
@@ -235,6 +236,14 @@ func (d *Supervisor) CloseSupervisor() {
 	if err != nil {
 		log.Panic(err)
 	}
+	data := utils.InsertData{
+		Shard_num:        params.ShardNum,
+		Node_num:         params.NodesInShard,
+		Run_mod:          params.RunMode,
+		Total_data_size:  params.TotalDataSize,
+		Use_shard_weight: params.UseShardWeight,
+		Inject_speed:     params.InjectSpeed,
+	}
 	for _, measureMod := range d.testMeasureMods {
 		targetPath := dirpath + measureMod.OutputMetricName() + ".csv"
 		f, err := os.Open(targetPath)
@@ -243,6 +252,20 @@ func (d *Supervisor) CloseSupervisor() {
 		for _, result := range resultPerEpoch {
 			resultStr = append(resultStr, strconv.FormatFloat(result, 'f', 8, 64))
 		}
+
+		totalResult := strconv.FormatFloat(totResult, 'f', 8, 64)
+		outputMetricName := measureMod.OutputMetricName()
+		switch outputMetricName {
+		case "CrossTransaction_ratio":
+			data.Cross_transaction_ratio = totalResult
+		case "Average_TPS":
+			data.Average_tps = totalResult
+		case "Transaction_Confirm_Latency":
+			data.Transaction_confirm_latency = totalResult
+		case "Tx_number":
+			data.Tx_number = totalResult
+		}
+
 		resultStr = append(resultStr, strconv.FormatFloat(totResult, 'f', 8, 64))
 		if err != nil && os.IsNotExist(err) {
 			file, er := os.Create(targetPath)
@@ -274,6 +297,7 @@ func (d *Supervisor) CloseSupervisor() {
 		f.Close()
 		d.sl.Slog.Println(measureMod.OutputRecord())
 	}
+	utils.InsertMeasureMetrics(data)
 	networks.CloseAllConnInPool()
 	d.tcpLn.Close()
 }

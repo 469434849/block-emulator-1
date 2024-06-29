@@ -1,0 +1,15 @@
+/log/
+/record/
+/test/dataset/
+/dataset/
+/test/record/
+/result/
+/log_clpa/
+/result_clpa/
+/result_broker/
+/log_broker/
+/result_relay/
+/log_*/
+/record*/
+/result_*/
+/.idea/*

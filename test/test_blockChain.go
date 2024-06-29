@@ -32,8 +32,8 @@ func TestBlockChain(ShardNums int) {
 			ShardID:        uint64(sid),
 			Nodes_perShard: uint64(1),
 			ShardNums:      4,
-			BlockSize:      uint64(params.MaxBlockSize_global),
-			BlockInterval:  uint64(params.Block_Interval),
+			BlockSize:      uint64(params.MaxBlockSizeGlobal),
+			BlockInterval:  uint64(params.BlockInterval),
 			InjectSpeed:    uint64(params.InjectSpeed),
 		}
 		CurChain, _ := chain.NewBlockChain(pcc, db)
